@@ -13,7 +13,7 @@
 	<name>minhasfinancas</name>
 	<description>Projeto para gerenciamento de finanças pessoais</description>
 	<properties>
-		<java.version>11</java.version>
+		<java.version>8</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
