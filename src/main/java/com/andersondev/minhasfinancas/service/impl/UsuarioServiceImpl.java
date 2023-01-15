@@ -3,10 +3,10 @@ package com.andersondev.minhasfinancas.service.impl;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.andersondev.minhasfinancas.api.dto.LancamentoDTO;
 import com.andersondev.minhasfinancas.exception.ErroAutenticacao;
 import com.andersondev.minhasfinancas.exception.RegraNegocioException;
 import com.andersondev.minhasfinancas.model.entity.Usuario;
@@ -19,6 +19,9 @@ public class UsuarioServiceImpl implements UsuarioService {
 	@Autowired
 	private UsuarioRepository repository;
 	
+	@Autowired
+	private PasswordEncoder encoder;
+	
 	@Override
 	public Usuario autenticar(String email, String senha) {
 		
@@ -28,7 +31,9 @@ public class UsuarioServiceImpl implements UsuarioService {
 			throw new ErroAutenticacao("Usuário não encontrado para o email informado.");
 		}
 		
-		if(!usuario.get().getSenha().equals(senha)) {
+		boolean senhasBatem = encoder.matches(senha, usuario.get().getSenha());
+		
+		if(!senhasBatem) {
 			throw new ErroAutenticacao("Senha inválida.");
 		}
 		
@@ -39,9 +44,15 @@ public class UsuarioServiceImpl implements UsuarioService {
 	@Transactional
 	public Usuario salvarUsuario(Usuario usuario) {
 		validarEmail(usuario.getEmail());
+		criptografarSenha(usuario);
 		return repository.save(usuario);
 	}
 
+	public Usuario criptografarSenha(Usuario usuario) {
+		usuario.setSenha(encoder.encode( usuario.getSenha() ));
+		return usuario;
+	}
+	
 	@Override
 	public void validarEmail(String email) {
 		boolean existe = repository.existsByEmail(email);
