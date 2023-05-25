@@ -1,0 +1,5 @@
+env: java
+build:
+  command: ./mvnw clean install
+run:
+  command: ./mvnw spring-boot:run
