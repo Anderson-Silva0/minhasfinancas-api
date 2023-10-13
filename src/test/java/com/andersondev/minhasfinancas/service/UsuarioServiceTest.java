@@ -1,31 +1,26 @@
 package com.andersondev.minhasfinancas.service;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.Optional;
-
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.test.context.ActiveProfiles;
-
 import com.andersondev.minhasfinancas.exception.ErroAutenticacao;
 import com.andersondev.minhasfinancas.exception.RegraNegocioException;
 import com.andersondev.minhasfinancas.model.entity.Usuario;
 import com.andersondev.minhasfinancas.model.repository.UsuarioRepository;
 import com.andersondev.minhasfinancas.service.impl.UsuarioServiceImpl;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
+
+import java.util.Optional;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -38,6 +33,9 @@ public class UsuarioServiceTest {
 	
 	@MockBean
 	private UsuarioRepository repository;
+
+	@MockBean
+	private PasswordEncoder encoder;
 	
 	@Test
 	public void deveSalvarUmUsuario() {
@@ -51,7 +49,7 @@ public class UsuarioServiceTest {
 		
 		when(repository.save(any(Usuario.class))).thenReturn(usuario);
 		
-		Usuario usuarioSalvo = service.salvarUsuario(new Usuario());
+		Usuario usuarioSalvo = service.salvarUsuario(usuario);
 		
 		assertNotNull(usuarioSalvo);
 		assertEquals(Usuario.class, usuarioSalvo.getClass());
@@ -83,6 +81,7 @@ public class UsuarioServiceTest {
 		
 		Usuario usuario = Usuario.builder().email(email).senha(senha).id(1l).build();
 		when(repository.findByEmail(usuario.getEmail())).thenReturn(Optional.of(usuario));
+		when(encoder.matches(any(), any())).thenReturn(true);
 		
 		Usuario resultUsuario = service.autenticar(email, senha);
 		
