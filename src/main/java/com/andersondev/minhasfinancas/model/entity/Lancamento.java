@@ -2,6 +2,7 @@ package com.andersondev.minhasfinancas.model.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
@@ -13,6 +14,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
 import com.andersondev.minhasfinancas.model.enums.StatusLancamento;
@@ -53,8 +56,8 @@ public class Lancamento {
 	private BigDecimal valor;
 	
 	@Column(name = "data_cadastro")
-	@Convert(converter = Jsr310JpaConverters.LocalDateConverter.class)
-	private LocalDate dataCadastro;
+	@CreationTimestamp
+	private LocalDateTime dataCadastro;
 	
 	@Column(name = "tipo")
 	@Enumerated(value = EnumType.STRING)
