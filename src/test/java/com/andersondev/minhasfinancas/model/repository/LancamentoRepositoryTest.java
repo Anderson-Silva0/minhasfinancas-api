@@ -6,7 +6,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -78,7 +78,7 @@ public class LancamentoRepositoryTest {
 				.valor(BigDecimal.valueOf(10))
 				.tipo(TipoLancamento.RECEITA)
 				.status(StatusLancamento.PENDENTE)
-				.dataCadastro(LocalDate.now())
+				.dataCadastro(LocalDateTime.now())
 				.build();
 	}
 }
